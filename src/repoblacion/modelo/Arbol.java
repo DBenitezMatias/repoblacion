@@ -1,4 +1,4 @@
-package repoblación.modelo;
+package repoblacion.modelo;
 
 public class Arbol {
 	Posicion posicion;
