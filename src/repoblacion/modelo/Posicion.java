@@ -63,7 +63,7 @@ public class Posicion {
 
 	@Override
 	public String toString() {
-		return "La posicion en el punto X es de =" + x + "M y en el punto Y es de = " + y + "M ";
+		return " punto X  =" +  ((double) Math.round(x * 100.0) / 100.0) + " Metros y en el punto Y es de = " +((double) Math.round(y * 100.0) / 100.0)+ " Metros ";
 	}
 
 

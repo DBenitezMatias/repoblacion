@@ -8,7 +8,7 @@ public enum Especie {
 	};
 	
 	public String toString() {
-	    return "La especie de arbol es : "+cadenaAmostrar;
+	    return " "+cadenaAmostrar;
 	}
 	
 
