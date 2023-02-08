@@ -22,7 +22,7 @@ public class MainApp  {
 
 			try {
 
-				bosque = new Bosque(anchura, altura, poblacion);
+				bosque = new Bosque(anchura, altura, poblacion+1);
 
 			} catch (IllegalArgumentException e) {
 				System.out.println("-----ERROR-----");

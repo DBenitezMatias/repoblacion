@@ -149,7 +149,7 @@ public class Bosque {
     
     @Override
     public String toString() {
-    	
+    	System.out.println("El bosque esta compuesto de los siguientes arboles : ");
 		for (Arbol e : arboles) {
 			if(e!=null) {
 			System.out.println(e);}
