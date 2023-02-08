@@ -1,142 +1,160 @@
 package repoblacion.modelo;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Bosque {
+    public static final int MAX_ALTURA = 500;
+    public static final int MINIMO = 10;
+    public static final int MAX_ANCHURA = 1000;
+    public static final int MAX_ESPECIES = 4;
+    
+    
+    private Arbol arbolMasAlejado;
+    private Arbol arbolMasCentrado;
+    private Random generador = new Random();
+    private int ancho;
+    private int alto;
+    private Arbol[] arboles;
 
-	public final int MAX_ALTURA = 500;
-	public int MINIMO = 10;
-	public final int MAX_ANCHURA = 1000;
-	public final int MAX_ESPECIES = 4;
+    
+    // CONSTRUCTOR
+    public Bosque(int ancho, int alto, int poblacion) {
+        setAncho(ancho);
+        setAlto(alto);
+        checkPoblacion(poblacion);
+        this.arboles = new Arbol[poblacion];
+        repoblar();
+        
+    }
 
-	private Random numAleatorios;
-	
-	private int ancho;
-	private int alto;
-	private int poblacion;
-	
-	
+   
+
+    
+    public Arbol[] duplicaBosque() {
+        return arboles.clone();
+    }
+
+    
+    public void checkPoblacion(int poblacion) {
+        int perimetro = 2 * (ancho + alto);
+        if (poblacion <= 0) {
+            throw new IllegalArgumentException("Error : La población debe ser mayor que cero.");
+        }
+        if (poblacion > perimetro) {
+            throw new IllegalArgumentException("Error : La población no puede superar el perímetro del bosque.");
+        }
+    }
+
+   
+    private void repoblar() {
+        for (int i = 0; i < arboles.length - 1; i++) {
+            int numRandom = generador.nextInt(7);
+            Especie especieAleatoria = null;
+            switch (numRandom) {
+                case 0:
+                    especieAleatoria = Especie.ALAMO;
+                    break;
+                case 1:
+                    especieAleatoria = Especie.CASTANO;
+                    break;
+                case 2:
+                    especieAleatoria = Especie.CIPRES;
+                    break;
+                case 3:
+                    especieAleatoria = Especie.ENCINA;
+                    break;
+                case 4:
+                    especieAleatoria = Especie.OLIVO;
+                    break;
+                case 5:
+                    especieAleatoria = Especie.PINO;
+                    break;
+                case 6:
+                    especieAleatoria = Especie.ROBLE;
+                    break;
+            }
+            Posicion posicionAleatoria = new Posicion(generador.nextDouble(getAncho()) + 0, generador.nextDouble(getAlto()) + 0);
+            int seleccionarEspecie = generador.nextInt(MAX_ESPECIES);
+            if (especieAleatoria == Especie.ALAMO) {
+                switch (seleccionarEspecie) {
+                    case 0:
+                        especieAleatoria = Especie.ALAMO;
+                        break;
+                    case 1:
+                        especieAleatoria = Especie.ENCINA;
+                        break;
+                    case 2:
+                        especieAleatoria = Especie.PINO;
+                        break;
+                    case 3:
+                        especieAleatoria = Especie.ROBLE;
+                        break;
+                }
+            } else if (especieAleatoria == Especie.OLIVO) {
+                switch (seleccionarEspecie) {
+                    case 0:
+                        especieAleatoria = Especie.OLIVO;
+                        break;
+                    case 1:
+                        especieAleatoria = Especie.CIPRES;
+                        break;
+                    case 2:
+                        especieAleatoria = Especie.PINO;
+                        break;
+                    case 3:
+                        especieAleatoria = Especie.ROBLE;
+                        break;
+                }
+            }
+            arboles[i] = new Arbol(especieAleatoria, posicionAleatoria);
+        }
+    }
 
 
-	private Arbol[] arboles;
-	private Arbol arbolMasAlejado;
-	private Arbol arbolMasCentrado;
+    
 
-	/*crea una clase Bosque que recibe tres parámetros: ancho, alto y población.
-	 *  Verifica que cada uno cumpla con unos requisitos específicos,
-	 *  lanzando una excepción si algún valor es inválido. Si todos los valores son válidos, 
-	 *  asigna los valores a las variables de la clase y llama a los métodos checkPoblacion y repoblar.*/
-	
-	public Bosque(int ancho, int alto, int poblacion) {
-		  if (ancho < 10 || ancho > MAX_ANCHURA || alto < 10 || alto > MAX_ALTURA || poblacion <= 1) {
-		    throw new IllegalArgumentException("ERROR: Argumentos inválidos");
-		  }
-		  setAncho(ancho);;
-		  setAlto(alto);;
-		  setPoblacion(poblacion);
-		  arboles = new Arbol[poblacion];
-		  checkPoblacion(poblacion);
-		  repoblar();
-		}
-/*
- *  crea una copia de un array de objetos 'Arbol' llamado 'arboles', y devuelve el nuevo array 'copiaBosque'.*/
-	
-	public Arbol[] duplicaBosque() {
-	    Arbol[] copiaBosque = new Arbol[poblacion];
-	    for (int i = 0; i < poblacion - 1; i++) {
-	        copiaBosque[i] = arboles[i];
-	    }
-	    return copiaBosque;
+   
+    // get y setters
+    public int getAncho() {
+        return ancho;
+    }
+
+    public int getAlto() {
+        return alto;
+    }
+
+    /*public Arbol getArbolMasAlejado() {
+		return arbolMasAlejado;
 	}
 
-//getters y setters
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
-	
-	public int getAncho() {
-		return ancho;
-	}
-
-	
-	public void setAlto(int alto) {
-		this.alto = alto;
-	}
-
-	
-	public int getAlto() {
-		return alto;
-	}
-	public int getPoblacion() {
-		return poblacion;
-	}
-
-	public void setPoblacion(int poblacion) {
-		this.poblacion = poblacion;
-	}
-
-	/**
-	 * genera una nueva población de árboles en una posición aleatoria dentro del área del bosque y con una especie aleatoria. 
-	 * Para especies específicas, como el alamo y el olivo, se selecciona una especie compatible entre un conjunto de especies compatibles previamente definidas.
-	 *  El método utiliza un objeto de la clase "Random" para generar valores aleatorios de posición y especie.
-	 */
-	private void repoblar() {
-	    Random random = new Random();
-	    Especie[] especiesCompatiblesAlamo = {Especie.ALAMO, Especie.ENCINA, Especie.PINO, Especie.ROBLE};
-	    Especie[] especiesCompatiblesOlivo = {Especie.OLIVO, Especie.CIPRES, Especie.PINO, Especie.ROBLE};
-	    
-	    for (int i = 0; i < arboles.length - 1; i++) {
-	        Posicion posicionAleatoria = new Posicion(random.nextDouble(getAncho()) + 0, random.nextDouble(getAlto()) + 0);
-	        Especie especieAleatoria = Especie.values()[random.nextInt(7)];
-	        
-	        if (especieAleatoria == Especie.ALAMO) {
-	            especieAleatoria = especiesCompatiblesAlamo[random.nextInt(MAX_ESPECIES)];
-	        } else if (especieAleatoria == Especie.OLIVO) {
-	            especieAleatoria = especiesCompatiblesOlivo[random.nextInt(MAX_ESPECIES)];
-	        }
-	    }
-	}
-
-
-	
-	public void checkPoblacion(int poblacion) {
-		// Calculamos el perímetro y comprabamos si la poblacion es mayor o igual al perímetro y si es mayor lanzamos una excepción.
-		int perimetro = ancho * 2 + alto * 2;
-		if (poblacion > perimetro) {
-			throw new IllegalArgumentException("ERROR: La población no puede superar el perímetro del bosque.");
-		}
-	}
-
-	
-	public void realizarCalculos() {
-		Arbol mayor = arboles[0];
-		Arbol menor = arboles[0];
-
-		for (int i = 1; i < arboles.length - 1; i++) {
-			double distancia = arboles[i].getPosicion().distancia(new Posicion(0, 0));
-
-			if (distancia > mayor.getPosicion().distancia(new Posicion(0, 0))) {
-				mayor = arboles[i];
-			} else if (distancia < menor.getPosicion().distancia(new Posicion(0, 0))) {
-				menor = arboles[i];
-			}
-		}
-
-		arbolMasCentrado = menor;
-		arbolMasAlejado = mayor;
-	}
-
-
-
-	
 	public Arbol getArbolMasCentrado() {
 		return arbolMasCentrado;
-	}
+	}*/
 
-	
-	public Arbol getArbolMasAlejado() {
-		return arbolMasAlejado;
+    
+    public void setAncho(int ancho) {
+        if (ancho < MINIMO || ancho > MAX_ANCHURA) {
+            throw new IllegalArgumentException("Error : Anchura no válida.");
+        }
+        this.ancho = ancho;
+    }
+
+    public void setAlto(int alto) {
+        if (alto < MINIMO || alto > MAX_ALTURA) {
+            throw new IllegalArgumentException("Error : Altura no válida.");
+        }
+        this.alto = alto;
+    }
+    
+    @Override
+    public String toString() {
+    	
+		for (Arbol e : arboles) {
+			if(e!=null) {
+			System.out.println(e);}
+		}
+		return "------------------- ";
 	}
 
 }
